@@ -18,10 +18,12 @@ function AdminDashboard() {
     fetchSubmissions()
   }, [navigate])
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
   const fetchSubmissions = async () => {
     try {
       const token = localStorage.getItem('adminToken')
-      const response = await axios.get('http://localhost:5000/api/admin/submissions', {
+      const response = await axios.get(`${API_URL}/api/admin/submissions`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       setSubmissions(response.data)
@@ -45,7 +47,7 @@ function AdminDashboard() {
   const updateStatus = async (id, status) => {
     try {
       const token = localStorage.getItem('adminToken')
-      await axios.patch(`http://localhost:5000/api/admin/submissions/${id}`, { status }, {
+      await axios.patch(`${API_URL}/api/admin/submissions/${id}`, { status }, {
         headers: { Authorization: `Bearer ${token}` }
       })
       fetchSubmissions()
@@ -60,7 +62,7 @@ function AdminDashboard() {
     
     try {
       const token = localStorage.getItem('adminToken')
-      await axios.delete(`http://localhost:5000/api/admin/submissions/${id}`, {
+      await axios.delete(`${API_URL}/api/admin/submissions/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       fetchSubmissions()

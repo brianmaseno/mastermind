@@ -6,6 +6,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,13 +16,16 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  credentials: true
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB Connection
-const MONGODB_URI = 'mongodb+srv://brianmayoga_db_user:TwS2nJaHf7XJn7gI@mastermind.wnifdqj.mongodb.net/?appName=mastermind';
-const JWT_SECRET = 'mustermind_secret_key_2024';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://brianmayoga_db_user:TwS2nJaHf7XJn7gI@mastermind.wnifdqj.mongodb.net/?appName=mastermind';
+const JWT_SECRET = process.env.JWT_SECRET || 'mustermind_secret_key_2024';
 
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))

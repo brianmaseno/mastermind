@@ -50,7 +50,8 @@ function GetHelp() {
         data.append('file', file)
       }
 
-      await axios.post('http://localhost:5000/api/submissions', data, {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+      await axios.post(`${API_URL}/api/submissions`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
