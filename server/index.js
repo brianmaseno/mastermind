@@ -15,9 +15,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Middleware
+// Middleware - Allow all origins (for Vercel preview deployments)
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
