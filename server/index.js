@@ -8,12 +8,12 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load .env from server folder
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 
@@ -64,27 +64,36 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Multer Configuration with Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: async (req, file) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
-    
-    return {
-      folder: 'mastermind-submissions',
-      resource_type: isImage ? 'image' : 'raw', // 'raw' for documents, 'image' for images
-      public_id: `${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`, // Remove extension
-      format: ext.substring(1), // Store original format
-      allowed_formats: ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'zip', 'gif', 'webp']
-    };
-  }
-});
+// Use memory storage for multer, then upload to Cloudinary manually
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
   storage,
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
+
+// Helper function to upload to Cloudinary
+const uploadToCloudinary = (fileBuffer, fileName) => {
+  return new Promise((resolve, reject) => {
+    const ext = path.extname(fileName).toLowerCase();
+    const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
+    
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'mastermind-submissions',
+        resource_type: isImage ? 'image' : 'raw',
+        public_id: `${Date.now()}-${fileName.replace(/\.[^/.]+$/, '')}`,
+        format: ext.substring(1)
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
+    
+    uploadStream.end(fileBuffer);
+  });
+};
 
 // Create uploads directory
 import fs from 'fs';
@@ -115,6 +124,22 @@ app.post('/api/submissions', upload.single('file'), async (req, res) => {
   try {
     const { fullName, email, phone, serviceType, subject, deadline, details } = req.body;
     
+    let cloudinaryUrl = null;
+    let originalFileName = null;
+    
+    // Upload file to Cloudinary if provided
+    if (req.file) {
+      try {
+        const result = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+        cloudinaryUrl = result.secure_url;
+        originalFileName = req.file.originalname;
+        console.log('File uploaded to Cloudinary:', cloudinaryUrl);
+      } catch (uploadError) {
+        console.error('Cloudinary upload error:', uploadError);
+        return res.status(500).json({ message: 'Error uploading file to cloud storage' });
+      }
+    }
+    
     const submission = new Submission({
       fullName,
       email,
@@ -123,8 +148,8 @@ app.post('/api/submissions', upload.single('file'), async (req, res) => {
       subject,
       deadline,
       details,
-      fileName: req.file?.originalname,
-      filePath: req.file?.path // Cloudinary URL
+      fileName: originalFileName,
+      filePath: cloudinaryUrl
     });
 
     await submission.save();
