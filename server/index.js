@@ -119,7 +119,6 @@ app.post('/api/submissions', upload.single('file'), async (req, res) => {
       fileName: req.file?.originalname,
       filePath: req.file?.path // Cloudinary URL
     });
-    });
 
     await submission.save();
     res.status(201).json({ message: 'Submission received successfully', id: submission._id });
