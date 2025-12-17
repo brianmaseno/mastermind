@@ -67,10 +67,17 @@ cloudinary.config({
 // Multer Configuration with Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'mastermind-submissions',
-    allowed_formats: ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'zip'],
-    resource_type: 'auto'
+  params: async (req, file) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
+    
+    return {
+      folder: 'mastermind-submissions',
+      resource_type: isImage ? 'image' : 'raw', // 'raw' for documents, 'image' for images
+      public_id: `${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`, // Remove extension
+      format: ext.substring(1), // Store original format
+      allowed_formats: ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'zip', 'gif', 'webp']
+    };
   }
 });
 
