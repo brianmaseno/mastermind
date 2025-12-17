@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 dotenv.config();
 
@@ -55,29 +57,26 @@ const adminSchema = new mongoose.Schema({
 const Submission = mongoose.model('Submission', submissionSchema);
 const Admin = mongoose.model('Admin', adminSchema);
 
-// Multer Configuration for File Uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'uploads'));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
+// Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Multer Configuration with Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'mastermind-submissions',
+    allowed_formats: ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'zip'],
+    resource_type: 'auto'
   }
 });
 
 const upload = multer({ 
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.jpeg', '.png', '.zip'];
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (allowedTypes.includes(ext)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type'));
-    }
-  }
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
 // Create uploads directory
@@ -118,7 +117,8 @@ app.post('/api/submissions', upload.single('file'), async (req, res) => {
       deadline,
       details,
       fileName: req.file?.originalname,
-      filePath: req.file?.path
+      filePath: req.file?.path // Cloudinary URL
+    });
     });
 
     await submission.save();
@@ -195,14 +195,15 @@ app.delete('/api/admin/submissions/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Download file (protected)
+// Download file (protected) - Redirect to Cloudinary URL
 app.get('/api/admin/download/:id', authMiddleware, async (req, res) => {
   try {
     const submission = await Submission.findById(req.params.id);
     if (!submission || !submission.filePath) {
       return res.status(404).json({ message: 'File not found' });
     }
-    res.download(submission.filePath, submission.fileName);
+    // Redirect to the Cloudinary URL for download
+    res.redirect(submission.filePath);
   } catch (error) {
     res.status(500).json({ message: 'Error downloading file' });
   }

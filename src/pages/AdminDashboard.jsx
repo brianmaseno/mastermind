@@ -83,17 +83,15 @@ function AdminDashboard() {
       const token = localStorage.getItem('adminToken')
       const response = await axios.get(`${API_URL}/api/admin/download/${submissionId}`, {
         headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob'
+        maxRedirects: 0,
+        validateStatus: (status) => status === 302 || status === 200
       })
       
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', fileName)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
+      // Get the redirect URL from response headers or use the filePath directly
+      const downloadUrl = response.headers.location || response.request.responseURL
+      
+      // Open in new tab for download
+      window.open(downloadUrl, '_blank')
     } catch (err) {
       console.error('Error downloading file:', err)
       alert('Failed to download file')
