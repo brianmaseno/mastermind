@@ -78,6 +78,28 @@ function AdminDashboard() {
     navigate('/admin')
   }
 
+  const handleDownload = async (submissionId, fileName) => {
+    try {
+      const token = localStorage.getItem('adminToken')
+      const response = await axios.get(`${API_URL}/api/admin/download/${submissionId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob'
+      })
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', fileName)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error('Error downloading file:', err)
+      alert('Failed to download file')
+    }
+  }
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -256,14 +278,21 @@ function AdminDashboard() {
               <div className="modal-field">
                 <label>Attached File</label>
                 <p>
-                  <a 
-                    href={`http://localhost:5000/api/admin/download/${selectedSubmission._id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: '#0B4D2C', fontWeight: 500 }}
+                  <button 
+                    onClick={() => handleDownload(selectedSubmission._id, selectedSubmission.fileName)}
+                    style={{ 
+                      background: 'none',
+                      border: 'none',
+                      color: '#0B4D2C', 
+                      fontWeight: 500,
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      padding: 0,
+                      font: 'inherit'
+                    }}
                   >
                     {selectedSubmission.fileName}
-                  </a>
+                  </button>
                 </p>
               </div>
             )}
