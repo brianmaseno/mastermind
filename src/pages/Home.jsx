@@ -228,7 +228,7 @@ function Home() {
               </div>
               <div className="contact-method">
                 <h3>WhatsApp</h3>
-                <p>+254796761628</p>
+                <p>+13292106984</p>
               </div>
               <div className="contact-method">
                 <h3>Availability</h3>
@@ -237,7 +237,7 @@ function Home() {
             </div>
             <div className="cta-buttons">
               <Link to="/get-help" className="btn btn-white btn-large">Submit Your Request</Link>
-              <a href="https://wa.me/254796761628?text=Hello%2C%20I%20need%20help%20with%20my%20online%20classes" target="_blank" rel="noopener noreferrer" className="btn btn-outline-white btn-large">
+              <a href="https://wa.me/13292106984?text=Hello%2C%20I%20need%20help%20with%20my%20online%20classes" target="_blank" rel="noopener noreferrer" className="btn btn-outline-white btn-large">
                 Chat on WhatsApp
               </a>
             </div>
@@ -248,7 +248,7 @@ function Home() {
       <Footer />
       
       <a 
-        href="https://wa.me/254796761628?text=Hello%2C%20I%20need%20help%20with%20my%20online%20classes" 
+        href="https://wa.me/13292106984?text=Hello%2C%20I%20need%20help%20with%20my%20online%20classes" 
         className="whatsapp-float" 
         target="_blank" 
         rel="noopener noreferrer"
