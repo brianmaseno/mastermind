@@ -282,7 +282,7 @@ function Services() {
             <div className="cta-buttons">
               <Link to="/get-help" className="btn btn-white btn-large">Submit Request</Link>
               <a 
-                href="https://wa.me/254796761628?text=Hello%2C%20I%20need%20help%20with%20my%20online%20classes" 
+                href="https://wa.me/13292106984?text=Hello%2C%20I%20need%20help%20with%20my%20online%20classes" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn btn-outline-white btn-large"
@@ -297,7 +297,7 @@ function Services() {
       <Footer />
 
       <a 
-        href="https://wa.me/254796761628?text=Hello%2C%20I%20need%20help%20with%20my%20online%20classes" 
+        href="https://wa.me/13292106984?text=Hello%2C%20I%20need%20help%20with%20my%20online%20classes" 
         className="whatsapp-float" 
         target="_blank" 
         rel="noopener noreferrer"
