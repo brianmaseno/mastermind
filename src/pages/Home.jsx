@@ -12,6 +12,11 @@ function Home() {
       
       {/* Hero Section */}
       <section className="hero">
+        {/* Background decorations */}
+        <div className="hero-bg-shape hero-bg-shape-1"></div>
+        <div className="hero-bg-shape hero-bg-shape-2"></div>
+        <div className="hero-bg-shape hero-bg-shape-3"></div>
+        
         <div className="container hero-container">
           <div className="hero-content">
             <div className="hero-badge">
@@ -54,27 +59,98 @@ function Home() {
               </div>
             </div>
             <div className="hero-cta">
-              <Link to="/get-help" className="btn btn-primary">Get Started Today</Link>
-              <Link to="/services" className="btn btn-secondary">View Services</Link>
+              <Link to="/get-help" className="btn btn-primary btn-hero">
+                Get Started Today
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"></path>
+                </svg>
+              </Link>
+              <Link to="/services" className="btn btn-secondary btn-hero">View Services</Link>
+            </div>
+            
+            {/* Trust indicators */}
+            <div className="hero-trust">
+              <div className="trust-avatars">
+                <div className="trust-avatar">J</div>
+                <div className="trust-avatar">M</div>
+                <div className="trust-avatar">S</div>
+                <div className="trust-avatar">A</div>
+                <div className="trust-avatar trust-avatar-more">+</div>
+              </div>
+              <div className="trust-text">
+                <span className="trust-rating">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                  </svg>
+                  4.9
+                </span>
+                <span>Trusted by 2,000+ students</span>
+              </div>
             </div>
           </div>
-          <div className="hero-image-wrapper">
-            <div className="hero-image-container">
-              <img src={heroImage} alt="Student success" className="hero-image" />
-              <div className="hero-decoration"></div>
+          
+          <div className="hero-visual">
+            <div className="hero-image-wrapper">
+              <div className="hero-image-container">
+                <img src={heroImage} alt="Student success" className="hero-image" />
+                <div className="hero-image-overlay"></div>
+              </div>
+              
+              {/* Floating cards */}
+              <div className="floating-card floating-card-1">
+                <div className="floating-card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </div>
+                <div className="floating-card-content">
+                  <span className="floating-card-number">95%</span>
+                  <span className="floating-card-label">Success Rate</span>
+                </div>
+              </div>
+              
+              <div className="floating-card floating-card-2">
+                <div className="floating-card-icon floating-card-icon-alt">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                  </svg>
+                </div>
+                <div className="floating-card-content">
+                  <span className="floating-card-number">2,000+</span>
+                  <span className="floating-card-label">Students Helped</span>
+                </div>
+              </div>
+              
+              <div className="floating-card floating-card-3">
+                <div className="floating-card-icon floating-card-icon-purple">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div className="floating-card-content">
+                  <span className="floating-card-number">24/7</span>
+                  <span className="floating-card-label">Support Available</span>
+                </div>
+              </div>
             </div>
-            <div className="hero-stats">
-              <div className="stat-item">
-                <div className="stat-number">2000+</div>
-                <div className="stat-label">Students Helped</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">95%</div>
-                <div className="stat-label">Success Rate</div>
-              </div>
+            
+            {/* Stats bar */}
+            <div className="hero-stats-bar">
               <div className="stat-item">
                 <div className="stat-number">50+</div>
                 <div className="stat-label">Subjects</div>
+              </div>
+              <div className="stat-divider"></div>
+              <div className="stat-item">
+                <div className="stat-number">10+</div>
+                <div className="stat-label">Platforms</div>
+              </div>
+              <div className="stat-divider"></div>
+              <div className="stat-item">
+                <div className="stat-number">5+</div>
+                <div className="stat-label">Years</div>
               </div>
             </div>
           </div>
